@@ -385,7 +385,7 @@
 <!-- ── HERO ── -->
 <section class="hero" id="hero" data-theme="dark">
   <div class="hero-blob" id="heroBg"></div>
-  <p class="hero-eyebrow">Portfolio · 2025</p>
+  <p class="hero-eyebrow">Portfolio · <span id="year"></span></p>
   <h1>Grayson<br>Zrelak</h1>
   <p class="hero-sub">
     <strong>Web Developer</strong> · Public Speaker · Marketing-Focused Creator.<br>
@@ -852,6 +852,9 @@ window.addEventListener('scroll', () => {
     ticking = true;
   }
 }, { passive: true });
+
+// Year
+document.getElementById('year').textContent = new Date().getFullYear();
 
 // Init
 updateNav();
