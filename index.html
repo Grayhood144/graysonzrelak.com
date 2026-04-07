@@ -513,7 +513,7 @@
       <div class="proj-visual pv1">Coming Soon</div>
       <div class="proj-body">
         <p class="proj-n">Project 01</p>
-        <h3 class="proj-name">Your First Project</h3>
+        <h3 class="proj-name">Project Placeholder 1</h3>
         <p class="proj-desc">Replace this with a real project — what you built and why it matters.</p>
         <div class="proj-tech"><span>HTML</span><span>CSS</span><span>JavaScript</span></div>
         <a href="#" class="proj-link">View Project →</a>
@@ -524,7 +524,7 @@
       <div class="proj-visual pv2">Coming Soon</div>
       <div class="proj-body">
         <p class="proj-n">Project 02</p>
-        <h3 class="proj-name">Your Second Project</h3>
+        <h3 class="proj-name">Project Placeholder 2</h3>
         <p class="proj-desc">Replace this with a real project — what you built and why it matters.</p>
         <div class="proj-tech"><span>React</span><span>CSS</span></div>
         <a href="#" class="proj-link">View Project →</a>
@@ -535,7 +535,7 @@
       <div class="proj-visual pv3">Coming Soon</div>
       <div class="proj-body">
         <p class="proj-n">Project 03</p>
-        <h3 class="proj-name">Your Third Project</h3>
+        <h3 class="proj-name">Project Placeholder 3</h3>
         <p class="proj-desc">Replace this with a real project — what you built and why it matters.</p>
         <div class="proj-tech"><span>Python</span><span>JavaScript</span></div>
         <a href="#" class="proj-link">View Project →</a>
@@ -633,7 +633,7 @@
 
 <!-- FOOTER -->
 <footer>
-  <p>© 2025 Grayson Zrelak. All rights reserved.</p>
+  <p>© <span id="fyear"></span> Grayson Zrelak. All rights reserved.</p>
   <div class="f-links">
     <a href="https://github.com/Grayhood144" target="_blank" rel="noopener">GitHub</a>
     <a href="https://www.linkedin.com/in/grayson-zrelak/" target="_blank" rel="noopener">LinkedIn</a>
@@ -855,7 +855,9 @@ window.addEventListener('scroll', () => {
 }, { passive: true });
 
 // Year
-document.getElementById('year').textContent = new Date().getFullYear();
+const yr = new Date().getFullYear();
+document.getElementById('year').textContent  = yr;
+document.getElementById('fyear').textContent = yr;
 
 // Init
 updateNav();
