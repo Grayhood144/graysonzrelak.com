@@ -198,6 +198,7 @@
 
     /* ─── HORIZONTAL SCROLL ─── */
     .hscroll-outer { height: 200vh; background: var(--black); }
+    @media (max-width: 768px) { .hscroll-outer { height: 400vh; } }
     .hscroll-sticky {
       position: sticky; top: 0; height: 100vh;
       overflow: hidden; display: flex; align-items: center;
