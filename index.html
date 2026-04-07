@@ -780,7 +780,7 @@ new IntersectionObserver((entries, obs) => {
     document.querySelectorAll('[data-count]').forEach(countUp);
     obs.disconnect();
   }
-}, { threshold: 0.3 }).observe(document.getElementById('stats'));
+}, { threshold: 0.7, rootMargin: '0px 0px -80px 0px' }).observe(document.querySelector('.stats-grid'));
 
 /* ════════════════════════════════════════
    TIMELINE DRAW
