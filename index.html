@@ -137,6 +137,25 @@
       will-change: transform;
     }
     .btn-s:hover { background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.24); }
+    .hero-inner {
+      display: flex; flex-direction: column; align-items: center; text-align: center; z-index: 1;
+    }
+    .hero-photo {
+      width: clamp(200px, 24vw, 340px);
+      aspect-ratio: 3/4;
+      border-radius: 20px;
+      object-fit: cover;
+      object-position: center 8%;
+      flex-shrink: 0;
+      z-index: 1;
+      border: 1px solid rgba(255,255,255,.1);
+      opacity: 0; animation: up .8s .75s var(--ease) forwards;
+    }
+    @media (min-width: 820px) {
+      .hero { flex-direction: row; gap: 72px; text-align: left; padding: 0 max(48px, 8vw); }
+      .hero-inner { align-items: flex-start; }
+      .hero-btns { justify-content: flex-start; }
+    }
     .scroll-hint {
       position: absolute; bottom: 38px; left: 50%; transform: translateX(-50%);
       display: flex; flex-direction: column; align-items: center; gap: 8px;
@@ -386,16 +405,19 @@
 <!-- ── HERO ── -->
 <section class="hero" id="hero" data-theme="dark">
   <div class="hero-blob" id="heroBg"></div>
-  <p class="hero-eyebrow">Portfolio · <span id="year"></span></p>
-  <h1>Grayson<br>Zrelak</h1>
-  <p class="hero-sub">
-    <strong>Web Developer</strong> · Public Speaker · Marketing-Focused Creator.<br>
-    Building clean, purposeful digital experiences.
-  </p>
-  <div class="hero-btns">
-    <a href="#projects" class="btn-p magnetic">View My Work ↓</a>
-    <a href="#contact"  class="btn-s magnetic">Let's Connect</a>
+  <div class="hero-inner">
+    <p class="hero-eyebrow">Portfolio · <span id="year"></span></p>
+    <h1>Grayson<br>Zrelak</h1>
+    <p class="hero-sub">
+      <strong>Web Developer</strong> · Public Speaker · Marketing-Focused Creator.<br>
+      Building clean, purposeful digital experiences.
+    </p>
+    <div class="hero-btns">
+      <a href="#projects" class="btn-p magnetic">View My Work ↓</a>
+      <a href="#contact"  class="btn-s magnetic">Let's Connect</a>
+    </div>
   </div>
+  <img class="hero-photo" src="Graysonzre.JPG" alt="Grayson Zrelak">
   <div class="scroll-hint">
     <span>Scroll</span>
     <div class="scroll-line"></div>
@@ -605,7 +627,7 @@
   </div>
 
   <div class="res-cta rv">
-    <a href="Grayson Zrelak Resume 26 (3).pdf" download class="btn-outline magnetic">Download Resume ↓</a>
+    <a href="GraysonZrelakResume26.pdf" download class="btn-outline magnetic">Download Resume ↓</a>
   </div>
 </section>
 
