@@ -626,13 +626,6 @@ const snext = document.getElementById('snext');
 if (track) {
   const cardW = () => (track.querySelector('.screen-item')?.offsetWidth || 600) + 16;
 
-  track.closest('section').addEventListener('wheel', e => {
-    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-      e.preventDefault();
-      track.scrollLeft += e.deltaY;
-    }
-  }, { passive: false });
-
   let isDown = false, startX, scrollLeft;
   track.addEventListener('mousedown', e => {
     isDown = true; track.classList.add('dragging');
