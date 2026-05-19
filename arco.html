@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arco — Grayson Zrelak</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --black:      #000;
+      --near-black: #1d1d1f;
+      --off-white:  #f5f5f7;
+      --white:      #fff;
+      --mid:        #6e6e73;
+      --light:      #86868b;
+      --blue:       #0071e3;
+      --blue-h:     #0077ed;
+      --ease:       cubic-bezier(0.25, 0.1, 0.25, 1);
+      --spring:     cubic-bezier(0.34, 1.56, 0.64, 1);
+      --arco-red:   #EC5228;
+      --arco-orange:#EF9651;
+      --arco-green: #357D58;
+      --arco-blue:  #3F39C2;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Helvetica Neue", sans-serif;
+      background: var(--black);
+      color: var(--white);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* ─── CUSTOM CURSOR ─── */
+    .cursor, .cursor-ring {
+      position: fixed; z-index: 9999; pointer-events: none;
+      border-radius: 50%; transform: translate(-50%, -50%);
+    }
+    .cursor { width: 8px; height: 8px; background: #fff; mix-blend-mode: difference; transition: width .2s, height .2s; top: 0; left: 0; }
+    .cursor-ring { width: 36px; height: 36px; border: 1.5px solid rgba(255,255,255,0.45); transition: width .35s var(--ease), height .35s var(--ease), border-color .3s; top: 0; left: 0; }
+    body.hovering .cursor { width: 14px; height: 14px; }
+    body.hovering .cursor-ring { width: 56px; height: 56px; border-color: rgba(255,255,255,0.75); }
+    @media (pointer: coarse) { .cursor, .cursor-ring { display: none; } }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+      height: 52px; display: flex; align-items: center; justify-content: space-between;
+      padding: 0 max(24px, 5vw);
+      background: rgba(0,0,0,0.72);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .nav-logo { font-size: 17px; font-weight: 700; letter-spacing: -.5px; }
+    .nav-back {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; font-weight: 500; color: var(--blue);
+      transition: opacity .2s;
+    }
+    .nav-back:hover { opacity: .7; }
+    .nav-back svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 120px 24px 80px;
+      background: var(--black); position: relative; overflow: hidden;
+    }
+    .hero-blob {
+      position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(ellipse 70% 60% at 50% 40%, rgba(63,57,194,.15) 0%, transparent 65%);
+    }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 11px; font-weight: 600; letter-spacing: 4px; text-transform: uppercase;
+      color: var(--arco-blue); margin-bottom: 24px;
+      opacity: 0; animation: up .8s .1s var(--ease) forwards;
+    }
+    .hero-dots { display: flex; gap: 6px; }
+    .hero-dots span {
+      width: 8px; height: 8px; border-radius: 50%;
+    }
+    .hero-dots span:nth-child(1) { background: var(--arco-red); }
+    .hero-dots span:nth-child(2) { background: var(--arco-orange); }
+    .hero-dots span:nth-child(3) { background: var(--arco-green); }
+    .hero-dots span:nth-child(4) { background: var(--arco-blue); }
+    h1 {
+      font-size: clamp(64px, 12vw, 128px);
+      font-weight: 800; letter-spacing: -5px; line-height: 1.0;
+      background: linear-gradient(175deg, #fff 0%, rgba(255,255,255,.5) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 20px;
+      opacity: 0; animation: up .8s .25s var(--ease) forwards;
+    }
+    .hero-sub {
+      font-size: clamp(16px, 2.2vw, 20px); font-weight: 300; color: var(--mid);
+      max-width: 560px; line-height: 1.65; letter-spacing: -.2px; margin-bottom: 48px;
+      opacity: 0; animation: up .8s .4s var(--ease) forwards;
+    }
+    .hero-sub strong { color: rgba(255,255,255,.82); font-weight: 400; }
+    .hero-btns {
+      display: flex; gap: 14px; flex-wrap: wrap; justify-content: center;
+      opacity: 0; animation: up .8s .55s var(--ease) forwards;
+    }
+    .btn-p {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 28px; border-radius: 980px;
+      font-size: 15px; font-weight: 500;
+      background: var(--arco-blue); color: #fff;
+      transition: background .2s, box-shadow .2s;
+    }
+    .btn-p:hover { background: #4f49d2; box-shadow: 0 0 0 4px rgba(63,57,194,.3); }
+    .btn-s {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 28px; border-radius: 980px;
+      font-size: 15px; font-weight: 500;
+      background: rgba(255,255,255,.08); color: var(--white);
+      border: 1px solid rgba(255,255,255,.12);
+      transition: background .2s, border-color .2s;
+    }
+    .btn-s:hover { background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.24); }
+    .scroll-hint {
+      position: absolute; bottom: 38px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      opacity: 0; animation: up .8s 1s var(--ease) forwards;
+    }
+    .scroll-hint span { font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(255,255,255,.28); }
+    .scroll-line { width: 1px; height: 44px; background: linear-gradient(to bottom, transparent, rgba(255,255,255,.3)); animation: pulse 2.2s ease-in-out infinite; }
+
+    /* ─── SECTION SHARED ─── */
+    section { padding: 100px max(24px, 6vw); }
+    .eye { font-size: 11px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--blue); margin-bottom: 16px; }
+    .sec-title { font-size: clamp(32px, 5vw, 60px); font-weight: 700; letter-spacing: -2px; line-height: 1.06; }
+    .sec-sub { font-size: 17px; color: var(--mid); max-width: 520px; line-height: 1.65; margin-top: 16px; }
+    .rv { opacity: 0; transform: translateY(30px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
+    .rv.on { opacity: 1; transform: translateY(0); }
+    .rv.d1 { transition-delay: .1s; } .rv.d2 { transition-delay: .2s; } .rv.d3 { transition-delay: .3s; }
+
+    /* ─── OVERVIEW ─── */
+    .overview-section { background: #fff; color: var(--near-black); }
+    .overview-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 64px; max-width: 1000px;
+      margin-top: 64px;
+    }
+    @media (max-width: 720px) { .overview-grid { grid-template-columns: 1fr; gap: 40px; } }
+    .overview-block h3 { font-size: 13px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--arco-blue); margin-bottom: 12px; }
+    .overview-block p { font-size: 15px; color: #444; line-height: 1.7; }
+
+    /* ─── TECH STRIP ─── */
+    .tech-section { background: var(--off-white); color: var(--near-black); padding: 80px max(24px, 6vw); }
+    .tech-grid { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 48px; }
+    .tech-chip {
+      padding: 10px 20px; border-radius: 980px;
+      font-size: 13px; font-weight: 600;
+      border: 1px solid rgba(0,0,0,.1);
+      background: #fff;
+      color: var(--near-black);
+      transition: box-shadow .2s;
+    }
+    .tech-chip:hover { box-shadow: 0 4px 16px rgba(0,0,0,.1); }
+    .tech-chip.highlight { background: var(--near-black); color: #fff; border-color: transparent; }
+
+    /* ─── FEATURES ─── */
+    .features-section { background: var(--black); color: var(--white); }
+    .features-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2px; margin-top: 64px;
+      border-radius: 20px; overflow: hidden;
+    }
+    .feature-card {
+      background: #111; padding: 36px 32px;
+      transition: background .25s;
+    }
+    .feature-card:hover { background: #161616; }
+    .feature-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; margin-bottom: 20px;
+    }
+    .fi-red    { background: rgba(236,82,40,.15); }
+    .fi-orange { background: rgba(239,150,81,.15); }
+    .fi-green  { background: rgba(53,125,88,.15); }
+    .fi-blue   { background: rgba(63,57,194,.15); }
+    .fi-purple { background: rgba(130,80,220,.15); }
+    .fi-teal   { background: rgba(0,180,180,.15); }
+    .feature-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+    .feature-card p { font-size: 14px; color: var(--mid); line-height: 1.65; }
+
+    /* ─── MILESTONES ─── */
+    .milestones-section { background: #0a0a0a; color: var(--white); }
+    .timeline { position: relative; margin-top: 64px; padding-left: 32px; }
+    .timeline::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+      width: 1px; background: linear-gradient(to bottom, var(--arco-blue), rgba(63,57,194,.1));
+    }
+    .tl-item { position: relative; padding-bottom: 48px; }
+    .tl-item:last-child { padding-bottom: 0; }
+    .tl-dot {
+      position: absolute; left: -38px; top: 4px;
+      width: 12px; height: 12px; border-radius: 50%;
+      background: var(--arco-blue); border: 2px solid #0a0a0a;
+      box-shadow: 0 0 0 3px rgba(63,57,194,.3);
+    }
+    .tl-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--arco-blue); margin-bottom: 6px; }
+    .tl-item h3 { font-size: 19px; font-weight: 700; margin-bottom: 8px; }
+    .tl-item p { font-size: 14px; color: var(--mid); line-height: 1.65; max-width: 640px; }
+
+    /* ─── STATS ─── */
+    .stats-section { background: var(--off-white); color: var(--near-black); }
+    .stats-row {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 2px; max-width: 800px; margin-top: 64px;
+      border-radius: 20px; overflow: hidden;
+    }
+    .stat-card { background: #fff; padding: 40px 24px; text-align: center; transition: background .25s; }
+    .stat-card:hover { background: #ebebed; }
+    .stat-num { font-size: clamp(42px, 6vw, 64px); font-weight: 800; letter-spacing: -3px; color: var(--near-black); }
+    .stat-lbl { font-size: 12px; color: var(--mid); margin-top: 4px; }
+
+    /* ─── TEAM ─── */
+    .team-section { background: var(--black); color: var(--white); }
+    .team-grid { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 48px; }
+    .team-chip {
+      padding: 12px 22px; border-radius: 980px;
+      font-size: 14px; font-weight: 500;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.1);
+    }
+    .team-chip.me { background: rgba(63,57,194,.2); border-color: rgba(63,57,194,.4); color: #a09ff0; }
+
+    /* ─── CTA ─── */
+    .cta-section {
+      background: var(--black); color: var(--white);
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; padding: 120px max(24px, 6vw);
+      border-top: 1px solid rgba(255,255,255,.06);
+    }
+    .cta-section h2 {
+      font-size: clamp(40px, 7vw, 80px); font-weight: 800; letter-spacing: -3px;
+      background: linear-gradient(175deg, #fff 0%, rgba(255,255,255,.5) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 16px;
+    }
+    .cta-section p { font-size: 17px; color: var(--mid); max-width: 440px; line-height: 1.65; margin-bottom: 40px; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--black); color: var(--mid);
+      border-top: 1px solid rgba(255,255,255,.06);
+      padding: 28px max(24px, 6vw);
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+    }
+    footer p { font-size: 12px; }
+    .f-links { display: flex; gap: 22px; }
+    .f-links a { font-size: 12px; color: var(--mid); transition: color .2s; }
+    .f-links a:hover { color: var(--white); }
+
+    @keyframes up    { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes pulse { 0%,100%{opacity:.25; transform:scaleY(1);} 50%{opacity:1; transform:scaleY(1.08);} }
+  </style>
+</head>
+<body>
+
+<div class="cursor"      id="cursor"></div>
+<div class="cursor-ring" id="cring"></div>
+
+<nav>
+  <a href="index.html" class="nav-back">
+    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    Back to Portfolio
+  </a>
+  <span class="nav-logo">GZ</span>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-blob"></div>
+  <div class="hero-tag">
+    <div class="hero-dots">
+      <span></span><span></span><span></span><span></span>
+    </div>
+    DIG Capstone · UCF · 2025–2026
+  </div>
+  <h1>Arco</h1>
+  <p class="hero-sub">
+    A <strong>gamified music education platform</strong> teaching children ages 5–11 the basics of violin and music theory through interactive lessons, mini-games, and a physical workbook.
+  </p>
+  <div class="hero-btns">
+    <a href="https://github.com/Grayhood144/arco" target="_blank" rel="noopener" class="btn-p magnetic">View on GitHub ↗</a>
+    <a href="index.html#projects" class="btn-s magnetic">← All Projects</a>
+  </div>
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- OVERVIEW -->
+<section class="overview-section" id="overview">
+  <p class="eye rv">Overview</p>
+  <h2 class="sec-title rv d1">What is Arco?</h2>
+  <div class="overview-grid">
+    <div class="overview-block rv d1">
+      <h3>The Problem</h3>
+      <p>Most children's music education tools are either too expensive, not engaging, or fail to bridge the gap between at-home practice and digital learning. Young learners need an experience that's fun, age-appropriate, and accessible.</p>
+    </div>
+    <div class="overview-block rv d2">
+      <h3>The Solution</h3>
+      <p>Arco combines structured video lessons, interactive mini-games, and a physical workbook connected via QR codes. Children earn stickers, medals, and unlock rewards as they progress — making learning feel like play.</p>
+    </div>
+    <div class="overview-block rv d1">
+      <h3>My Role</h3>
+      <p>I contributed to the front-end development, wire-framing the Contact Us, Events, FAQ, and Stickers sections in Figma, and helped with visual design decisions throughout the project lifecycle.</p>
+    </div>
+    <div class="overview-block rv d2">
+      <h3>Timeline</h3>
+      <p>Built across 7 milestones over two semesters at UCF. Progressed from research and prototyping through full front-end and back-end integration, testing, and final deployment.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section class="tech-section">
+  <p class="eye rv">Tech Stack</p>
+  <h2 class="sec-title rv d1" style="color:var(--near-black)">Built with.</h2>
+  <p class="sec-sub rv d2">Plain HTML, CSS, and JavaScript on the front-end — no frameworks — paired with a PHP + MySQL backend, containerized with Docker.</p>
+  <div class="tech-grid rv d2">
+    <span class="tech-chip highlight">HTML5</span>
+    <span class="tech-chip highlight">CSS3</span>
+    <span class="tech-chip highlight">JavaScript</span>
+    <span class="tech-chip highlight">PHP</span>
+    <span class="tech-chip highlight">MySQL</span>
+    <span class="tech-chip highlight">Docker</span>
+    <span class="tech-chip">Nginx</span>
+    <span class="tech-chip">PayPal Sandbox API</span>
+    <span class="tech-chip">Python (QR generation)</span>
+    <span class="tech-chip">REST API (custom)</span>
+    <span class="tech-chip">PDO</span>
+    <span class="tech-chip">Figma</span>
+    <span class="tech-chip">Session Auth</span>
+    <span class="tech-chip">SQL</span>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-section">
+  <p class="eye rv">Features</p>
+  <h2 class="sec-title rv d1">What it does.</h2>
+  <div class="features-grid">
+    <div class="feature-card rv">
+      <div class="feature-icon fi-blue">🎻</div>
+      <h3>Structured Lessons</h3>
+      <p>Video lessons covering violin anatomy, how to hold the bow, string names, the musical staff, note types, scales, and key signatures — designed for ages 5–11.</p>
+    </div>
+    <div class="feature-card rv d1">
+      <div class="feature-icon fi-green">🎮</div>
+      <h3>Mini-Games</h3>
+      <p>Interactive games like Match-Em Up, String Surprise, Note Math, and What Comes Next? reinforce lesson content through play at the end of each module.</p>
+    </div>
+    <div class="feature-card rv d2">
+      <div class="feature-icon fi-red">🎵</div>
+      <h3>Free Play</h3>
+      <p>A virtual violin fingerboard where users tap strings to hear notes and see them appear on the musical staff in real time — no pressure, just exploration.</p>
+    </div>
+    <div class="feature-card rv">
+      <div class="feature-icon fi-orange">⭐</div>
+      <h3>Rewards System</h3>
+      <p>Medals for completing lessons, stickers from the physical workbook, and limited-time event rewards keep young learners motivated and coming back.</p>
+    </div>
+    <div class="feature-card rv d1">
+      <div class="feature-icon fi-purple">📦</div>
+      <h3>Physical Workbook + QR</h3>
+      <p>A companion workbook with lesson exercises. Each page has a QR code — scan it to unlock exclusive digital stickers that can't be earned any other way.</p>
+    </div>
+    <div class="feature-card rv d2">
+      <div class="feature-icon fi-teal">👨‍👩‍👧</div>
+      <h3>Parental Controls</h3>
+      <p>A password-protected Grown-Up Corner lets parents set daily limits, restrict content by grade level, view progress stats, and manage the subscription.</p>
+    </div>
+    <div class="feature-card rv">
+      <div class="feature-icon fi-blue">💳</div>
+      <h3>Premier Club</h3>
+      <p>A PayPal-powered subscription tier that unlocks advanced lessons, exclusive games, and premium events. Built with PayPal Sandbox API for secure testing.</p>
+    </div>
+    <div class="feature-card rv d1">
+      <div class="feature-icon fi-green">🔐</div>
+      <h3>Auth & Accounts</h3>
+      <p>Full login, registration, OTP email verification, and password recovery flow. Sessions handled server-side with PHP, passwords hashed, credentials protected.</p>
+    </div>
+    <div class="feature-card rv d2">
+      <div class="feature-icon fi-red">📊</div>
+      <h3>Progress Tracking</h3>
+      <p>The backend tracks streaks, time spent, lessons completed, and QR sticker unlocks — giving parents visibility into their child's learning journey.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MILESTONES -->
+<section class="milestones-section">
+  <p class="eye rv">Development Journey</p>
+  <h2 class="sec-title rv d1">7 milestones.</h2>
+  <p class="sec-sub rv d2">From research to a fully integrated, Docker-containerized application.</p>
+  <div class="timeline">
+    <div class="tl-item rv">
+      <div class="tl-dot"></div>
+      <p class="tl-label">Milestone 1–2</p>
+      <h3>Research & Design Foundation</h3>
+      <p>Defined the target audience (ages 5–11), identified competitor gaps, and built the visual design guide — including the four-color Arco brand palette, typography system (Poppins + Lexend), icon library, and low-fidelity wireframes.</p>
+    </div>
+    <div class="tl-item rv d1">
+      <div class="tl-dot"></div>
+      <p class="tl-label">Milestone 3</p>
+      <h3>High-Fidelity Prototype & User Testing</h3>
+      <p>Built a full Figma hi-fi prototype covering all screens. Conducted focus group testing with real kids and parents, uncovering critical gaps (missing checkout, lesson page, logout flow) and documented mitigation priorities.</p>
+    </div>
+    <div class="tl-item rv d1">
+      <div class="tl-dot"></div>
+      <p class="tl-label">Milestone 5</p>
+      <h3>Front-End Development</h3>
+      <p>Translated the prototype into a working HTML/CSS/JavaScript interface. Implemented a modular architecture with reusable frame layouts and dynamic content injection. Added custom video controls, magnetic buttons, and a full asset inventory of 100+ SVGs.</p>
+    </div>
+    <div class="tl-item rv d1">
+      <div class="tl-dot"></div>
+      <p class="tl-label">Milestone 6</p>
+      <h3>Back-End Integration</h3>
+      <p>Built a PHP + MySQL REST API containerized with Docker. Implemented authentication, lesson progress, subscription handling, QR code validation, and PayPal Sandbox payment processing. Connected the physical workbook to the digital platform via Python-generated QR codes.</p>
+    </div>
+    <div class="tl-item rv d1">
+      <div class="tl-dot"></div>
+      <p class="tl-label">Milestone 7</p>
+      <h3>System Testing & Debugging</h3>
+      <p>Ran 41 comprehensive test cases across navigation, lesson flow, gamification, rewards, parental controls, and Premier Club. 39 of 41 tests passed. The 2 failures were QR-code tests dependent on the physical workbook not yet being printed.</p>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats-section">
+  <p class="eye rv">By the numbers</p>
+  <h2 class="sec-title rv d1" style="color:var(--near-black)">The scope.</h2>
+  <div class="stats-row rv d2">
+    <div class="stat-card"><span class="stat-num">41</span><p class="stat-lbl">Test cases</p></div>
+    <div class="stat-card"><span class="stat-num">7</span><p class="stat-lbl">Milestones</p></div>
+    <div class="stat-card"><span class="stat-num">6</span><p class="stat-lbl">Team members</p></div>
+    <div class="stat-card"><span class="stat-num">3</span><p class="stat-lbl">Lesson tracks</p></div>
+    <div class="stat-card"><span class="stat-num">319</span><p class="stat-lbl">GitHub commits</p></div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section class="team-section">
+  <p class="eye rv">The Team</p>
+  <h2 class="sec-title rv d1">Built together.</h2>
+  <p class="sec-sub rv d2">A six-person team working across design, front-end, back-end, content, and testing for two semesters at UCF.</p>
+  <div class="team-grid rv d2">
+    <span class="team-chip me">Grayson Zrelak — Front-End &amp; Design</span>
+    <span class="team-chip">Chloe Becker — Front-End Lead</span>
+    <span class="team-chip">Marcella Roberts — Design &amp; Visual QA</span>
+    <span class="team-chip">Malia Major — Design &amp; Content</span>
+    <span class="team-chip">Hannah Plumlee — Front-End &amp; QR</span>
+    <span class="team-chip">Jose Ramos — Back-End &amp; Architecture</span>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <p class="eye rv">Source Code</p>
+  <h2 class="rv d1">See the work.</h2>
+  <p class="rv d2">The full codebase is on GitHub — HTML, CSS, JavaScript, PHP, SQL, Docker, and everything in between.</p>
+  <div class="hero-btns rv d3">
+    <a href="https://github.com/Grayhood144/arco" target="_blank" rel="noopener" class="btn-p magnetic">View on GitHub ↗</a>
+    <a href="index.html" class="btn-s magnetic">← Portfolio</a>
+  </div>
+</section>
+
+<footer>
+  <p>© <span id="fyear"></span> Grayson Zrelak. All rights reserved.</p>
+  <div class="f-links">
+    <a href="https://github.com/Grayhood114" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://www.linkedin.com/in/grayson-zrelak/" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="mailto:Graysonzrelak@gmail.com">Email</a>
+  </div>
+</footer>
+
+<script>
+const cursorDot  = document.getElementById('cursor');
+const cursorRing = document.getElementById('cring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursorDot.style.left = mx + 'px';
+  cursorDot.style.top  = my + 'px';
+});
+(function ringLoop() {
+  rx += (mx - rx) * 0.11;
+  ry += (my - ry) * 0.11;
+  cursorRing.style.left = rx + 'px';
+  cursorRing.style.top  = ry + 'px';
+  requestAnimationFrame(ringLoop);
+})();
+document.querySelectorAll('a, button, .magnetic').forEach(el => {
+  el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+  el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+});
+
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (!target) return;
+    e.preventDefault();
+    window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 52, behavior: 'smooth' });
+  });
+});
+
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); obs.unobserve(e.target); } });
+}, { threshold: 0.08 });
+document.querySelectorAll('.rv').forEach(el => obs.observe(el));
+
+document.getElementById('fyear').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
