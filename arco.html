@@ -261,6 +261,29 @@
     .f-links a { font-size: 12px; color: var(--mid); transition: color .2s; }
     .f-links a:hover { color: var(--white); }
 
+    /* ─── SCREENSHOTS ─── */
+    .screens-section { background: #0a0a0a; padding: 100px 0; }
+    .screens-head { padding: 0 max(24px, 6vw); }
+    .screens-track {
+      display: flex; gap: 16px;
+      overflow-x: auto; padding: 40px max(24px, 6vw) 40px;
+      scroll-snap-type: x mandatory; scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .screens-track::-webkit-scrollbar { display: none; }
+    .screen-item {
+      flex: 0 0 600px; scroll-snap-align: start;
+      border-radius: 14px; overflow: hidden;
+      border: 1px solid rgba(255,255,255,.07);
+      box-shadow: 0 20px 50px rgba(0,0,0,.5);
+      transition: transform .3s var(--ease), box-shadow .3s;
+    }
+    @media (max-width: 680px) { .screen-item { flex: 0 0 85vw; } }
+    .screen-item:hover { transform: translateY(-6px); box-shadow: 0 30px 70px rgba(0,0,0,.7); }
+    .screen-item img { width: 100%; height: 380px; object-fit: cover; object-position: top; display: block; }
+    .screen-cap { padding: 12px 16px; background: #111; border-top: 1px solid rgba(255,255,255,.06); }
+    .screen-cap span { font-size: 11px; color: var(--mid); letter-spacing: .5px; }
+
     @keyframes up    { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
     @keyframes pulse { 0%,100%{opacity:.25; transform:scaleY(1);} 50%{opacity:1; transform:scaleY(1.08);} }
   </style>
@@ -282,9 +305,7 @@
 <section class="hero" id="hero">
   <div class="hero-blob"></div>
   <div class="hero-tag">
-    <div class="hero-dots">
-      <span></span><span></span><span></span><span></span>
-    </div>
+    <img src="images/ArcoLogo.png" alt="Arco" style="height:30px; filter:brightness(0) invert(1); margin-right:6px;" />
     DIG Capstone · UCF · 2025–2026
   </div>
   <h1>Arco</h1>
@@ -321,6 +342,56 @@
     <div class="overview-block rv d2">
       <h3>Timeline</h3>
       <p>Built across 7 milestones over two semesters at UCF. Progressed from research and prototyping through full front-end and back-end integration, testing, and final deployment.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SCREENSHOTS -->
+<section class="screens-section">
+  <div class="screens-head">
+    <p class="eye rv">Screenshots</p>
+    <h2 class="sec-title rv d1" style="color:var(--white)">The app, in action.</h2>
+  </div>
+  <div class="screens-track">
+    <div class="screen-item rv">
+      <img src="images/Landingpage.png" alt="Landing Page" loading="lazy" />
+      <div class="screen-cap"><span>Landing Page</span></div>
+    </div>
+    <div class="screen-item rv d1">
+      <img src="images/home.png" alt="Home Dashboard" loading="lazy" />
+      <div class="screen-cap"><span>Home Dashboard</span></div>
+    </div>
+    <div class="screen-item rv d1">
+      <img src="images/Signin.png" alt="Sign In / Sign Up" loading="lazy" />
+      <div class="screen-cap"><span>Sign In / Sign Up</span></div>
+    </div>
+    <div class="screen-item rv d1">
+      <img src="images/Lessons.png" alt="Lessons" loading="lazy" />
+      <div class="screen-cap"><span>Lessons</span></div>
+    </div>
+    <div class="screen-item rv d1">
+      <img src="images/Games.png" alt="Games" loading="lazy" />
+      <div class="screen-cap"><span>Games</span></div>
+    </div>
+    <div class="screen-item rv d1">
+      <img src="images/Freeplay.png" alt="Free Play" loading="lazy" />
+      <div class="screen-cap"><span>Free Play</span></div>
+    </div>
+    <div class="screen-item rv d1">
+      <img src="images/Awards.png" alt="Awards" loading="lazy" />
+      <div class="screen-cap"><span>Awards</span></div>
+    </div>
+    <div class="screen-item rv d1">
+      <img src="images/payment.png" alt="Premier Club &amp; Payment" loading="lazy" />
+      <div class="screen-cap"><span>Premier Club &amp; Payment</span></div>
+    </div>
+    <div class="screen-item rv d1">
+      <img src="images/Parentallock.png" alt="Parental Lock" loading="lazy" />
+      <div class="screen-cap"><span>Parental Lock</span></div>
+    </div>
+    <div class="screen-item rv d1">
+      <img src="images/Settings.png" alt="Settings" loading="lazy" />
+      <div class="screen-cap"><span>Settings</span></div>
     </div>
   </div>
 </section>
