@@ -269,7 +269,9 @@
       overflow-x: auto; padding: 40px max(24px, 6vw) 40px;
       scroll-snap-type: x mandatory; scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
+      cursor: grab;
     }
+    .screens-track.dragging { cursor: grabbing; }
     .screens-track::-webkit-scrollbar { display: none; }
     .screen-item {
       flex: 0 0 600px; scroll-snap-align: start;
@@ -595,6 +597,28 @@ const obs = new IntersectionObserver((entries) => {
 document.querySelectorAll('.rv').forEach(el => obs.observe(el));
 
 document.getElementById('fyear').textContent = new Date().getFullYear();
+
+const track = document.querySelector('.screens-track');
+if (track) {
+  track.addEventListener('wheel', e => {
+    e.preventDefault();
+    track.scrollLeft += e.deltaY + e.deltaX;
+  }, { passive: false });
+
+  let isDown = false, startX, scrollLeft;
+  track.addEventListener('mousedown', e => {
+    isDown = true; track.classList.add('dragging');
+    startX = e.pageX - track.offsetLeft;
+    scrollLeft = track.scrollLeft;
+  });
+  document.addEventListener('mouseup', () => { isDown = false; track.classList.remove('dragging'); });
+  track.addEventListener('mousemove', e => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - track.offsetLeft;
+    track.scrollLeft = scrollLeft - (x - startX) * 1.5;
+  });
+}
 </script>
 </body>
 </html>
